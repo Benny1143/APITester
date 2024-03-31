@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">APITester</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="login">Login</string>
+    <string name="placeholder">Placeholder</string>
+</resources>
