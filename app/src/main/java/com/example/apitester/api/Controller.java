@@ -1,5 +1,6 @@
 package com.example.apitester.api;
 
+import com.example.apitester.middleware.Auth;
 import com.example.apitester.model.Token;
 import com.example.apitester.model.TravelPlans;
 import com.example.apitester.model.User;
@@ -26,6 +27,14 @@ public class Controller {
     public static Service getService() {
         boolean testing = false;
         return testing ? new TestingService() : apiService;
+    }
+
+    public static Call<ArrayList<TravelPlans>> getTravelPlans(Auth auth){
+        return getService().getTravelPlans(getToken(auth));
+    }
+
+    private static String getToken(Auth auth) {
+        return "Bearer " + auth.getToken();
     }
 
     static class TestingService implements Service {

@@ -34,7 +34,7 @@ public class SecondActivity extends AppCompatActivity {
                 redirect();
             });
             findViewById(R.id.travelPlansButton).setOnClickListener(v-> {
-                Controller.getService().getTravelPlans("Bearer " + auth.getToken()).enqueue(new Callback<ArrayList<TravelPlans>>() {
+                Controller.getTravelPlans(auth).enqueue(new Callback<ArrayList<TravelPlans>>() {
                     @Override
                     public void onResponse(Call<ArrayList<TravelPlans>> call, Response<ArrayList<TravelPlans>> response) {
                         if (response.isSuccessful() && response.body() != null) {
