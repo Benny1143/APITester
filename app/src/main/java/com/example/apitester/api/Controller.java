@@ -1,9 +1,12 @@
 package com.example.apitester.api;
 
 import com.example.apitester.model.Token;
+import com.example.apitester.model.TravelPlans;
 import com.example.apitester.model.User;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 import okhttp3.Request;
 import okio.Timeout;
@@ -29,6 +32,16 @@ public class Controller {
         @Override
         public Call<Token> authenticate(User user) {
             return new ByPassCall<>(new Token("Testing Token"));
+        }
+
+        @Override
+        public Call<ArrayList<TravelPlans>> getTravelPlans(String token) {
+            ArrayList<TravelPlans> fakeData = new ArrayList<>();
+            LocalDate date = LocalDate.of(1999, 1, 1);
+            fakeData.add(new TravelPlans(1, "Testing Plan", date, date));
+            fakeData.add(new TravelPlans(2, "Testing Plan2", date, date));
+            fakeData.add(new TravelPlans(3, "Testing Plan3", date, date));
+            return new ByPassCall<>(fakeData);
         }
 
         static class ByPassCall<T> implements Call<T> {

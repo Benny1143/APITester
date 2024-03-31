@@ -7,7 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.example.apitester.api.Controller;
 import com.example.apitester.middleware.Auth;
+import com.example.apitester.model.TravelPlans;
+
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SecondActivity extends AppCompatActivity {
     private Auth auth;
@@ -24,6 +32,24 @@ public class SecondActivity extends AppCompatActivity {
             findViewById(R.id.logoutButton).setOnClickListener(v -> {
                 auth.logout();
                 redirect();
+            });
+            findViewById(R.id.travelPlansButton).setOnClickListener(v-> {
+                Controller.getService().getTravelPlans("Bearer " + auth.getToken()).enqueue(new Callback<ArrayList<TravelPlans>>() {
+                    @Override
+                    public void onResponse(Call<ArrayList<TravelPlans>> call, Response<ArrayList<TravelPlans>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            response.body().forEach(t -> Log.e("Second", t.toString()));
+                        } else {
+                            Log.d("Second", response.toString());
+                            Log.e("Second", "Empty");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ArrayList<TravelPlans>> call, Throwable throwable) {
+                        Log.e("Second", throwable.toString());
+                    }
+                });
             });
         }
     }

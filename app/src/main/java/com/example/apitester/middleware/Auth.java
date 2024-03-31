@@ -82,4 +82,8 @@ public class Auth {
     public String getUsername(){
         return Auth.username;
     }
+
+    public String getToken() {
+        return token;
+    }
 }
