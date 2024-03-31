@@ -1,7 +1,5 @@
 package com.example.apitester.model;
 
-import androidx.annotation.NonNull;
-
 public class Token {
     String token;
 

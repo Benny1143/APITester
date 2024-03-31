@@ -4,4 +4,6 @@
     <string name="name">Name</string>
     <string name="login">Login</string>
     <string name="placeholder">Placeholder</string>
+    <string name="welcome">Welcome</string>
+    <string name="log_out">Log Out</string>
 </resources>
