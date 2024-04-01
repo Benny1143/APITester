@@ -36,7 +36,7 @@ public class Auth {
     private void refresh() {
         token = mPreferences.getString(TOKEN_KEY, null);
         username = mPreferences.getString(USERNAME_KEY, null);
-        Log.e("Auth:refresh", username + "" + token);
+        Log.e("Auth:refresh", username + " " + token);
     }
 
     public void saveUserAndToken(String username, String token) {

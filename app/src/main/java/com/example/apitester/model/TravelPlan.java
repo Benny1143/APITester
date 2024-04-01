@@ -5,14 +5,17 @@ import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
-public class TravelPlans {
+public class TravelPlan {
     private final int id;
+    private String creator;
     private final String title;
     private final int[] startDate;
     private final int[] endDate;
-
-    public TravelPlans(int id, String title, LocalDate startDate, LocalDate endDate) {
+    private String joinCode;
+    private ArrayList<Event> events;
+    public TravelPlan(int id, String title, LocalDate startDate, LocalDate endDate) {
         this.id = id;
         this.title = title;
         this.startDate = parseDate(startDate);
@@ -35,6 +38,13 @@ public class TravelPlans {
     @NonNull
     @Override
     public String toString() {
-        return String.format("Id is %d %s %s %s", id, title, intDateConvertor(startDate).toString(), intDateConvertor(endDate).toString());
+        StringBuilder baseString = new StringBuilder(String.format("Id is %d %s %s %s", id, title, intDateConvertor(startDate).toString(), intDateConvertor(endDate).toString()));
+        if(creator != null) {
+            baseString.append(String.format("\nCreator: %s\nJoinCode: %s", creator, joinCode));
+            for (int i = 0; i < events.size(); i++) {
+                baseString.append(events.get(i).toString());
+            }
+        }
+        return baseString.toString();
     }
 }
