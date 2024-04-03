@@ -10,11 +10,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.apitester.api.CallbackResponse;
+import com.example.apitester.api.API;
 import com.example.apitester.middleware.Auth;
 import com.example.apitester.model.Token;
 
-import retrofit2.Call;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,16 +50,21 @@ public class MainActivity extends AppCompatActivity {
                 editTextUsername.setEnabled(true);
                 editTextTextPassword.setEnabled(true);
             } else {
-                auth.login(username, password, new CallbackResponse<Token>() {
+                auth.login(username, password, new API.Callback<Token>() {
                     @Override
-                    public void onResponse(Call<Token> call, Response<Token> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
-                            tokenView.setText(response.body().getToken());
-                            redirect();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Wrong Username/Password", Toast.LENGTH_SHORT).show();
-                        }
+                    public void onResponse(Token token) {
+                        Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
+                        tokenView.setText(token.getToken());
+                        redirect();
+                    }
+
+                    @Override
+                    public void onFailure(Response<Token> res) {
+                        Toast.makeText(MainActivity.this, "Wrong Username/Password", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFinal() {
                         editTextUsername.setEnabled(true);
                         editTextTextPassword.setEnabled(true);
                     }

@@ -1,7 +1,8 @@
 package com.example.apitester.api;
 
-import com.example.apitester.middleware.Auth;
-import com.example.apitester.model.Event;
+import androidx.annotation.NonNull;
+
+import com.example.apitester.model.EventModel;
 import com.example.apitester.model.Token;
 import com.example.apitester.model.TravelPlan;
 import com.example.apitester.model.User;
@@ -12,37 +13,37 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import okhttp3.Request;
+import okhttp3.ResponseBody;
 import okio.Timeout;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class Controller {
-    static public final LocalDate fakeDate = LocalDate.of(1999, 01, 01);
-    static private final Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
+    static public final LocalDate fakeDate = LocalDate.of(1999, 1, 1);
+    static private final String BASEURL = "http://10.0.2.2:8080/";
+    static private final Retrofit retrofit = new Retrofit.Builder().baseUrl(BASEURL)
+            .addConverterFactory(GsonConverterFactory.create()).build();
     static private final Service apiService = retrofit.create(Service.class);
-
-    private Controller() {
-    }
+    static private final Retrofit retrofitScalar = new Retrofit.Builder().baseUrl(BASEURL)
+            .addConverterFactory(ScalarsConverterFactory.create()).build();
+    static private final Service apiServiceScalar = retrofitScalar.create(Service.class);
+    static private final boolean TESTING = false;
 
     public static Service getService() {
-        boolean testing = false;
-        return testing ? new TestingService() : apiService;
+        return TESTING ? new TestingService() : apiService;
     }
 
-    public static Call<ArrayList<TravelPlan>> getTravelPlans(Auth auth) {
-        return getService().getTravelPlans(auth.getToken());
-    }
-
-    public static Call<TravelPlan> getTravelPlans(Auth auth, String travelPlanId) {
-        return getService().getTravelPlan(auth.getToken(), travelPlanId);
+    public static Service getServiceScalar() {
+        return TESTING ? new TestingService() : apiServiceScalar;
     }
 
     static class TestingService implements Service {
         @Override
-        public Call<Token> register(User user) {
+        public Call<Token> register(User.Create user) {
             return null;
         }
 
@@ -87,12 +88,12 @@ public class Controller {
         }
 
         @Override
-        public Call<Event> getEvent(String token, String travelPlanId, String eventId) {
+        public Call<EventModel> getEvent(String token, String travelPlanId, String eventId) {
             return null;
         }
 
         @Override
-        public Call<Event> updateEvent(String token, String travelPlanId, String eventId, Event event) {
+        public Call<EventModel> updateEvent(String token, String travelPlanId, String eventId, EventModel event) {
             return null;
         }
 
@@ -102,7 +103,7 @@ public class Controller {
         }
 
         @Override
-        public Call<Event> createEvent(String token, String travelPlanId, Event event) {
+        public Call<EventModel> createEvent(String token, String travelPlanId, EventModel event) {
             return null;
         }
 
@@ -137,12 +138,12 @@ public class Controller {
         }
 
         @Override
-        public Call<TravelPlan> updateTravelPlan(String token, String travelPlanId, TravelPlan travelPlan) {
+        public Call<ResponseBody> updateTravelPlan(String token, String travelPlanId, TravelPlan.Create travelPlan) {
             return null;
         }
 
         @Override
-        public Call<TravelPlan> deleteTravelPlan(String token, String travelPlanId) {
+        public Call<ResponseBody> deleteTravelPlan(String token, String travelPlanId) {
             return null;
         }
 
@@ -159,7 +160,7 @@ public class Controller {
             }
 
             @Override
-            public Response<T> execute() throws IOException {
+            public Response<T> execute() {
                 return null;
             }
 

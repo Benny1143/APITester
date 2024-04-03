@@ -1,6 +1,6 @@
 package com.example.apitester.api;
 
-import com.example.apitester.model.Event;
+import com.example.apitester.model.EventModel;
 import com.example.apitester.model.Token;
 import com.example.apitester.model.TravelPlan;
 import com.example.apitester.model.User;
@@ -8,6 +8,7 @@ import com.example.apitester.model.Voting;
 
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -23,7 +24,7 @@ public interface Service {
      * Do not require Authorization except logout
      */
     @POST("/api/v1/auth/register")
-    Call<Token> register(@Body User user);
+    Call<Token> register(@Body User.Create user);
 
     @POST("/api/v1/auth/log-out")
     Call<Message> logOut(@Header("Authorization") String token);
@@ -35,7 +36,7 @@ public interface Service {
      * Controller: Others
      */
     @POST("/api/v1/connection/ping")
-    Call<String> ping();
+    Call<String> ping(); //TODO: Test
 
     /**
      * Controller: travel-plan-controller
@@ -44,10 +45,10 @@ public interface Service {
     Call<TravelPlan> getTravelPlan(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId);
 
     @PUT("/api/v1/travelplans/{travelPlanId}")
-    Call<TravelPlan> updateTravelPlan(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Body TravelPlan travelPlan); //TODO: Test
+    Call<ResponseBody> updateTravelPlan(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Body TravelPlan.Create travelPlan);
 
-    @DELETE("/api/v1/travelplans/{travelPlanId}")
-    Call<TravelPlan> deleteTravelPlan(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId); //TODO: Test
+    @DELETE("/api/v1/travelplans/{travelPlanId}") //FIXME: Unable to delete plan
+    Call<ResponseBody> deleteTravelPlan(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId);
 
     @GET("/api/v1/travelplans")
     Call<ArrayList<TravelPlan>> getTravelPlans(@Header("Authorization") String token);
@@ -56,45 +57,45 @@ public interface Service {
     Call<TravelPlan> createTravelPlan(@Header("Authorization") String token, @Body TravelPlan.Create travelPlan);
 
     @POST("/api/v1/travelplans/{travelPlanId}/joinlink")
-    Call<String> renewJoinlink(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId); //TODO: Test
+    Call<String> renewJoinlink(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId);
 
-    @POST("/api/v1/travelplans/join")
-    Call<TravelPlan> joinTravelPlan(@Header("Authorization") String token, @Body() String joinlink); //TODO: Test
+    @POST("/api/v1/travelplans/join/{joinCode}") //FIXME: Unable to join
+    Call<TravelPlan> joinTravelPlan(@Header("Authorization") String token, @Path("joinCode") String joinCode);
 
     /**
      * Controller: event-controller
      */
-    @GET("/api/v1/travelplans/{travelPlanId}/events/{eventId}")
-    Call<Event> getEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId); //TODO: Test
+    @GET("/api/v1/travelplans/{travelPlanId}/events/{eventId}") //TODO: Test
+    Call<EventModel> getEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId);
 
-    @PUT("/api/v1/travelplans/{travelPlanId}/events/{eventId}")
-    Call<Event> updateEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId, @Body Event event); //TODO: Test
+    @PUT("/api/v1/travelplans/{travelPlanId}/events/{eventId}") //TODO: Test
+    Call<EventModel> updateEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId, @Body EventModel event);
 
-    @DELETE("/api/v1/travelplans/{travelPlanId}/events/{eventId}")
-    Call<String> deleteEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId); //TODO: Test
+    @DELETE("/api/v1/travelplans/{travelPlanId}/events/{eventId}") //TODO: Test
+    Call<String> deleteEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId);
 
-    @POST("/api/v1/travelplans/{travelPlanId}/events")
-    Call<Event> createEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Body Event event); //TODO: Test
+    @POST("/api/v1/travelplans/{travelPlanId}/events") //TODO: Test
+    Call<EventModel> createEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Body EventModel event);
 
     /**
      * Controller: voting-controller
      */
-    @GET("/api/v1/travelplans/{travelPlanId}/voting")
-    Call<ArrayList<Voting>> getVotings(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId); //TODO: Test
+    @GET("/api/v1/travelplans/{travelPlanId}/voting") //TODO: Test
+    Call<ArrayList<Voting>> getVotings(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId);
 
-    @POST("/api/v1/travelplans/{travelPlanId}/voting")
-    Call<Voting> createVoting(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Body Voting voting); //TODO: Test
+    @POST("/api/v1/travelplans/{travelPlanId}/voting") //TODO: Test
+    Call<Voting> createVoting(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Body Voting voting);
 
-    @POST("/api/v1/travelplans/{travelPlanId}/voting/{votingId}/vote")
-    Call<String> createVote(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("votingId") String votingId, @Body Voting.Vote vote); //TODO: Test
+    @POST("/api/v1/travelplans/{travelPlanId}/voting/{votingId}/vote") //TODO: Test
+    Call<String> createVote(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("votingId") String votingId, @Body Voting.Vote vote);
 
-    @GET("/api/v1/travelplans/{travelPlanId}/voting/{votingId}")
-    Call<Voting> getVoting(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("votingId") String votingId); //TODO: Test
+    @GET("/api/v1/travelplans/{travelPlanId}/voting/{votingId}") //TODO: Test
+    Call<Voting> getVoting(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("votingId") String votingId);
 
-    @DELETE("/api/v1/travelplans/{travelPlanId}/voting/{votingId}")
-    Call<String> deleteVoting(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("votingId") String votingId); //TODO: Test
+    @DELETE("/api/v1/travelplans/{travelPlanId}/voting/{votingId}") //TODO: Test
+    Call<String> deleteVoting(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("votingId") String votingId);
 
-    public class Message {
+     class Message {
         private String message;
     }
 }

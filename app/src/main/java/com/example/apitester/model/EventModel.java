@@ -1,8 +1,6 @@
 package com.example.apitester.model;
 
-import androidx.annotation.NonNull;
-
-public class Event {
+public class EventModel {
     private String id;
     private String creator;
     private String title;
@@ -12,7 +10,6 @@ public class Event {
     private String placeStatus;
     private String joinCode;
     private Loc loc;
-
 
     @Override
     public String toString() {

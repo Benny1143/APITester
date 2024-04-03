@@ -7,7 +7,7 @@ public class Voting {
     private String creator;
     private String startTime;
     private String endTime;
-    private Event event;
+    private EventModel event;
     private ArrayList<Vote> votes;
 
     public class Vote {
