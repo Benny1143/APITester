@@ -53,7 +53,7 @@ public interface Service {
     Call<ArrayList<TravelPlan>> getTravelPlans(@Header("Authorization") String token);
 
     @POST("/api/v1/travelplans")
-    Call<TravelPlan> createTravelPlan(@Header("Authorization") String token, @Body TravelPlan travelPlan); //TODO: Test
+    Call<TravelPlan> createTravelPlan(@Header("Authorization") String token, @Body TravelPlan.Create travelPlan);
 
     @POST("/api/v1/travelplans/{travelPlanId}/joinlink")
     Call<String> renewJoinlink(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId); //TODO: Test

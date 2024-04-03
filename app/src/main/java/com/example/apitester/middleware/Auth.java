@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.apitester.api.Controller;
+import com.example.apitester.api.Service;
 import com.example.apitester.model.Token;
 import com.example.apitester.model.User;
 
@@ -18,6 +19,7 @@ public class Auth {
     private static SharedPreferences mPreferences;
     private final String TOKEN_KEY = "Token_key";
     private final String USERNAME_KEY = "Username_key";
+    private final String AUTH_CODE = "Auth";
 
     private Auth(android.content.SharedPreferences sharedPreferences) {
         mPreferences = sharedPreferences;
@@ -30,6 +32,7 @@ public class Auth {
     }
 
     public boolean isAuth() {
+        //TODO: Check if token is valid
         return token != null;
     }
 
@@ -61,6 +64,54 @@ public class Auth {
 
             @Override
             public void onFailure(Call<Token> call, Throwable throwable) {
+                Log.e(AUTH_CODE, throwable.toString());
+                Log.e(AUTH_CODE, "Fail");
+                callback.onFailure(call, throwable);
+            }
+        });
+    }
+
+    public void register(String username, String password, String email, Callback<Token> callback) {
+        Controller.getService().register(new User(username, password, email)).enqueue(new Callback<Token>() {
+            @Override
+            public void onResponse(Call<Token> call, Response<Token> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    saveUserAndToken(username, response.body().getToken());
+                }
+                callback.onResponse(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<Token> call, Throwable throwable) {
+                Log.e(AUTH_CODE, throwable.toString());
+                Log.e(AUTH_CODE, "Fail");
+                callback.onFailure(call, throwable);
+            }
+        });
+    }
+
+    public void logout(Callback<Service.Message> callback) {
+        SharedPreferences.Editor preferencesEditor = mPreferences.edit();
+        preferencesEditor.putString(TOKEN_KEY, null);
+        preferencesEditor.putString(USERNAME_KEY, null);
+        preferencesEditor.apply();
+        Log.i(AUTH_CODE, "Logging out");
+        Log.i(AUTH_CODE, token);
+        String tokenHolder = token;
+        token = null;
+        username = null;
+        Controller.getService().logOut(getToken(tokenHolder)).enqueue(new Callback<Service.Message>() {
+            @Override
+            public void onResponse(Call<Service.Message> call, Response<Service.Message> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.i(AUTH_CODE, "Log out Successful");
+                }
+                callback.onResponse(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<Service.Message> call, Throwable throwable) {
                 Log.e("Auth", throwable.toString());
                 Log.e("Auth", "Fail");
                 callback.onFailure(call, throwable);
@@ -68,22 +119,24 @@ public class Auth {
         });
     }
 
-    public void logout() {
-        token = null;
-        username = null;
-        SharedPreferences.Editor preferencesEditor = mPreferences.edit();
-        preferencesEditor.putString(TOKEN_KEY, null);
-        preferencesEditor.putString(USERNAME_KEY, null);
-        preferencesEditor.apply();
-        //Todo: API Call to Logout
-        //Todo: Callback function
-    }
+//    public static void responseDebugger(Response<Object> response) {
+//        Log.i("Debugger", response.raw().request().toString());
+//        Log.i("Debugger", response.raw().request().headers().toString());
+//    }
 
-    public String getUsername(){
+    public String getUsername() {
         return Auth.username;
     }
 
     public String getToken() {
+        return "Bearer " + getTokenRaw();
+    }
+
+    public String getToken(String token) {
+        return "Bearer " + token;
+    }
+
+    public String getTokenRaw() {
         return token;
     }
 }

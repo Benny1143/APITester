@@ -6,15 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.apitester.api.CallbackResponse;
 import com.example.apitester.api.Controller;
+import com.example.apitester.api.Service;
 import com.example.apitester.middleware.Auth;
 import com.example.apitester.model.TravelPlan;
 
-import java.util.ArrayList;
-
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SecondActivity extends AppCompatActivity {
@@ -34,46 +34,34 @@ public class SecondActivity extends AppCompatActivity {
 
             messageView.setText("Welcome " + auth.getUsername() + "!\uD83E\uDD73");
             findViewById(R.id.logoutButton).setOnClickListener(v -> {
-                auth.logout();
-                redirect();
-            });
-            findViewById(R.id.travelPlansButton).setOnClickListener(v-> {
-                Controller.getTravelPlans(auth).enqueue(new Callback<ArrayList<TravelPlan>>() {
+                auth.logout(new CallbackResponse<Service.Message>() {
                     @Override
-                    public void onResponse(Call<ArrayList<TravelPlan>> call, Response<ArrayList<TravelPlan>> response) {
+                    public void onResponse(Call<Service.Message> call, Response<Service.Message> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            response.body().forEach(t -> Log.e(SECOND_KEY, t.toString()));
-                        } else {
-                            Log.d(SECOND_KEY, response.toString());
-                            Log.e(SECOND_KEY, "Empty");
+                            Toast.makeText(SecondActivity.this, "Logout Successful", Toast.LENGTH_LONG).show();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ArrayList<TravelPlan>> call, Throwable throwable) {
-                        Log.e("Second", throwable.toString());
                     }
                 });
-
-                Controller.getTravelPlans(auth,"0").enqueue(new Callback<TravelPlan>() {
+                redirect();
+            });
+            findViewById(R.id.travelPlansButton).setOnClickListener(v -> {
+//                Controller.getTravelPlans(auth).enqueue(new CallbackResponse<ArrayList<TravelPlan>>() {
+//                    @Override
+//                    public void onResponse(Call<ArrayList<TravelPlan>> call, Response<ArrayList<TravelPlan>> response) {
+//                        if (response.isSuccessful() && response.body() != null) {
+//                            response.body().forEach(t -> Log.e(SECOND_KEY, t.toString()));
+//                        } else {
+//                            Log.d(SECOND_KEY, response.toString());
+//                            Log.e(SECOND_KEY, "Empty");
+//                        }
+//                    }
+//                });
+                TravelPlan.createTravelPlan(auth, "Going Home1111", Controller.fakeDate, Controller.fakeDate, new CallbackResponse<TravelPlan>() {
                     @Override
                     public void onResponse(Call<TravelPlan> call, Response<TravelPlan> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            outputTextView.setText(response.body().toString());
-                        } else {
-                            Log.d(SECOND_KEY, response.toString());
-                            int code = response.code();
-                            if(code == 404) {
-                                Log.d(SECOND_KEY, "File Not Found");
-                            }
-                            Log.e(SECOND_KEY, "Code: " + code);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<TravelPlan> call, Throwable throwable) {
-                        Log.e("Second", throwable.toString());
-
+                        assert response.body() != null;
+                        outputTextView.setText(response.body().toString());
+                        Toast.makeText(SecondActivity.this, "Travel Plan Created",Toast.LENGTH_LONG);
                     }
                 });
             });

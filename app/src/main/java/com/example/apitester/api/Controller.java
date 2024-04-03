@@ -20,6 +20,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Controller {
+    static public final LocalDate fakeDate = LocalDate.of(1999, 01, 01);
     static private final Retrofit retrofit = new Retrofit.Builder().baseUrl("http://10.0.2.2:8080/").addConverterFactory(GsonConverterFactory.create()).build();
     static private final Service apiService = retrofit.create(Service.class);
 
@@ -31,16 +32,12 @@ public class Controller {
         return testing ? new TestingService() : apiService;
     }
 
-    public static Call<ArrayList<TravelPlan>> getTravelPlans(Auth auth){
-        return getService().getTravelPlans(getToken(auth));
+    public static Call<ArrayList<TravelPlan>> getTravelPlans(Auth auth) {
+        return getService().getTravelPlans(auth.getToken());
     }
 
-    public static Call<TravelPlan> getTravelPlans(Auth auth, String travelPlanId){
-        return getService().getTravelPlan(getToken(auth), travelPlanId);
-    }
-
-    private static String getToken(Auth auth) {
-        return "Bearer " + auth.getToken();
+    public static Call<TravelPlan> getTravelPlans(Auth auth, String travelPlanId) {
+        return getService().getTravelPlan(auth.getToken(), travelPlanId);
     }
 
     static class TestingService implements Service {
@@ -75,7 +72,7 @@ public class Controller {
         }
 
         @Override
-        public Call<TravelPlan> createTravelPlan(String token, TravelPlan travelPlan) {
+        public Call<TravelPlan> createTravelPlan(String token, TravelPlan.Create travelPlan) {
             return null;
         }
 

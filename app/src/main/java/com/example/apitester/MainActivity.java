@@ -10,11 +10,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.apitester.api.CallbackResponse;
 import com.example.apitester.middleware.Auth;
 import com.example.apitester.model.Token;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,27 +46,23 @@ public class MainActivity extends AppCompatActivity {
             String password = editTextTextPassword.getText().toString();
             if (username.isEmpty() || password.isEmpty()) {
                 if (username.isEmpty())
-                    Toast.makeText(MainActivity.this, "Username Empty", Toast.LENGTH_LONG).show();
-                else Toast.makeText(MainActivity.this, "Password Empty", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Username Empty", Toast.LENGTH_SHORT).show();
+                else Toast.makeText(MainActivity.this, "Password Empty", Toast.LENGTH_SHORT).show();
                 editTextUsername.setEnabled(true);
                 editTextTextPassword.setEnabled(true);
             } else {
-                auth.login(username, password, new Callback<Token>() {
+                auth.login(username, password, new CallbackResponse<Token>() {
                     @Override
                     public void onResponse(Call<Token> call, Response<Token> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_SHORT).show();
                             tokenView.setText(response.body().getToken());
                             redirect();
                         } else {
-                            Toast.makeText(MainActivity.this, "Wrong Username/Password", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "Wrong Username/Password", Toast.LENGTH_SHORT).show();
                         }
                         editTextUsername.setEnabled(true);
                         editTextTextPassword.setEnabled(true);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Token> call, Throwable throwable) {
                     }
                 });
             }
