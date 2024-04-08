@@ -63,7 +63,7 @@ public class Auth {
     }
 
     public void register(String username, String password, String email) {
-        //FIXME: To be fixed
+        Log.e(AUTH_CODE, "Registering");
         API.Auth.register(username, password, email)
                 .setOnResponse(token -> saveUserAndToken(username, token.getToken()))
                 .setOnFailure(response -> Log.e(AUTH_CODE, "Fail to Register"))

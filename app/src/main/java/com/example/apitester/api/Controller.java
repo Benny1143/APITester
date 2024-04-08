@@ -88,7 +88,7 @@ public class Controller {
         }
 
         @Override
-        public Call<EventModel> getEvent(String token, String travelPlanId, String eventId) {
+        public Call<EventModel.GET> getEvent(String token, String travelPlanId, String eventId) {
             return null;
         }
 
@@ -103,7 +103,7 @@ public class Controller {
         }
 
         @Override
-        public Call<EventModel> createEvent(String token, String travelPlanId, EventModel event) {
+        public Call<EventModel.GET> createEvent(String token, String travelPlanId, EventModel.Create event) {
             return null;
         }
 

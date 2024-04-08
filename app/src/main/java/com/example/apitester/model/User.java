@@ -36,6 +36,15 @@ public class User {
             this.password = password;
             this.email = email;
         }
+
+        @Override
+        public String toString() {
+            return "Create{" +
+                    "username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    ", email='" + email + '\'' +
+                    '}';
+        }
     }
 }
 

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.apitester.model.EventModel;
 import com.example.apitester.model.Token;
 import com.example.apitester.model.TravelPlan;
 import com.example.apitester.model.User;
@@ -70,6 +71,25 @@ public class API {
         }
     }
 
+    public static class Event {
+        public static APIBuilder<EventModel.GET> create(com.example.apitester.middleware.Auth auth, String travelPlanId, EventModel.Create event) {
+            return new APIBuilder<>(Controller.getService().createEvent(auth.getToken(), travelPlanId, event));
+        }
+
+        public static APIBuilder<EventModel> update(com.example.apitester.middleware.Auth auth, String travelPlanId, EventModel event) {
+            return new APIBuilder<>(Controller.getService().updateEvent(auth.getToken(), travelPlanId, event.getId(), event));
+        }
+
+        public static APIBuilder<EventModel.GET> getEvent(com.example.apitester.middleware.Auth auth, String travelPlanId, String eventId) {
+            return new APIBuilder<>(Controller.getService().getEvent(auth.getToken(), travelPlanId, eventId));
+        }
+
+        public static APIBuilder<String> delete(com.example.apitester.middleware.Auth auth, String travelPlanId, String eventId) {
+            return new APIBuilder<>(Controller.getServiceScalar().deleteEvent(auth.getToken(), travelPlanId, eventId));
+        }
+
+    }
+
     public static class APIBuilder<T> {
         private final Call<T> call;
         private Response<T> response;
@@ -97,7 +117,10 @@ public class API {
                     if (res.raw().request().body() != null)
                         Log.i("Debugger", res.raw().request().body().toString());
                     if (res.isSuccessful() && res.body() != null) response.onResponse(res.body());
-                    else failure.onFailure(res);
+                    else {
+                        Log.e("API:Failure", res.toString());
+                        failure.onFailure(res);
+                    }
                 }
 
                 /**
@@ -106,18 +129,14 @@ public class API {
                 @Override
                 public void onFailure(@NonNull Call<T> call, @NonNull Throwable throwable) {
                     //Executing the call failed (this is not an http error)
-                    Log.e("API", throwable.toString());
-                    Log.e("API", call.toString());
+                    Log.e("API:Critical", throwable.toString());
+                    Log.e("API:Critical", call.toString());
                 }
             });
         }
     }
 
-    public static abstract class Callback<T> {
-        public abstract void onResponse(T o);
-
-        public abstract void onFailure(retrofit2.Response<T> res);
-
+    public static abstract class Callback<T> implements Response<T>, Failure<T>{
         public void onFinal() {
         }
     }

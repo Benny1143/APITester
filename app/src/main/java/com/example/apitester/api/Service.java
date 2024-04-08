@@ -65,8 +65,8 @@ public interface Service {
     /**
      * Controller: event-controller
      */
-    @GET("/api/v1/travelplans/{travelPlanId}/events/{eventId}") //TODO: Test
-    Call<EventModel> getEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId);
+    @GET("/api/v1/travelplans/{travelPlanId}/events/{eventId}")
+    Call<EventModel.GET> getEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId);
 
     @PUT("/api/v1/travelplans/{travelPlanId}/events/{eventId}") //TODO: Test
     Call<EventModel> updateEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId, @Body EventModel event);
@@ -74,8 +74,8 @@ public interface Service {
     @DELETE("/api/v1/travelplans/{travelPlanId}/events/{eventId}") //TODO: Test
     Call<String> deleteEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Path("eventId") String eventId);
 
-    @POST("/api/v1/travelplans/{travelPlanId}/events") //TODO: Test
-    Call<EventModel> createEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Body EventModel event);
+    @POST("/api/v1/travelplans/{travelPlanId}/events")
+    Call<EventModel.GET> createEvent(@Header("Authorization") String token, @Path("travelPlanId") String travelPlanId, @Body EventModel.Create event);
 
     /**
      * Controller: voting-controller
